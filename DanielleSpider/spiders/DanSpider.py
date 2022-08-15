@@ -1,37 +1,44 @@
 import scrapy
-import re
+import xlsxwriter
 
 class DanSpider(scrapy.Spider):
     name = "DanSpider"
-    url = "https://www.hbggzyfwpt.cn/jyxx/jsgcZbgg"
+    urls = [{"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbgg", "tabName": "招标信息汇总"},
+            {"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbjggs", "tabName": "中标信息汇总"}]
 
     form = {
         "currentPage": "1",
         "area": "000",
         "currentArea": "001",
-        "industriesTypeCode": "0",
+        "industriesTypeCode": "1",
         "scrollValue": "0",
         "bulletinName": "",
         "publishTimeType": "1",
         "publishTimeStart": "",
-                "publishTimeEnd": ""
+        "publishTimeEnd": ""
     }
+    
+    industriesTypeCodes = ["1"]
 
     def start_requests(self):
-        yield scrapy.FormRequest(url=self.url, formdata=self.form, callback=self.parseCount)
-        return super().start_requests()
+        for url in self.urls:
+            yield scrapy.FormRequest(url=url['url'], formdata=self.form, callback=self.parseCount, meta=url)
+        # return super().start_requests()
     
     def parseCount(self, response):
+        mm = response.meta
         data=response.css('div.mmggxlh a::text').getall()
         print("---------------------")
+        print(mm)
         print(int(data[-2]))
         count = int(data[-2])
         
         for i in range(2, count+1):
             self.form['currentPage']=str(i)
             print(self.form)
-            yield scrapy.FormRequest(url=self.url, formdata=self.form, callback=self.parseItem)
+            # yield scrapy.FormRequest(url=self.url, formdata=self.form, callback=self.parseItem)
       
             
     def parseItem(self, response, **kwargs):
+        
         pass       

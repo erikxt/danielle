@@ -1,10 +1,11 @@
 import scrapy
-import xlsxwriter
+from scrapy.loader import ItemLoader
+from DanielleSpider.items import DaniellespiderItem
 
 class DanSpider(scrapy.Spider):
     name = "DanSpider"
-    urls = [{"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbgg", "tabName": "招标信息汇总"},
-            {"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbjggs", "tabName": "中标信息汇总"}]
+    urls = [{"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbgg", "sheetName": "招标信息汇总"},
+            {"url": "https://www.hbggzyfwpt.cn/jyxx/jsgcZbjggs", "sheetName": "中标信息汇总"}]
 
     form = {
         "currentPage": "1",
@@ -40,5 +41,5 @@ class DanSpider(scrapy.Spider):
       
             
     def parseItem(self, response, **kwargs):
-        
-        pass       
+        l = ItemLoader(item=DaniellespiderItem(), response=response)
+        return l.load_item()

@@ -10,4 +10,5 @@ class DaniellespiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     name = scrapy.Field()
-    # pass
+    source = scrapy.Field()
+    url = scrapy.Field()
